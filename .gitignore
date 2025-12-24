@@ -31,3 +31,11 @@ test/
 *.jpg
 
 
+node_modules/
+.env
+runs/
+uploads/
+test/
+*.jpg
+*.png
+*.webp
