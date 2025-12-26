@@ -379,7 +379,7 @@ const [updatedProfile, setUpdatedProfile] = useState(profile);
       formData.append('image', selectedFile);
       formData.append('mealType', mealType);
       formData.append('weight', weight); // <-- New: adding weight
-      console.log(mealType);
+      // console.log(mealType);
       const response = await fetch(`${Api}/meals/`, {
         method: 'POST',
         headers: {
@@ -404,15 +404,15 @@ const [updatedProfile, setUpdatedProfile] = useState(profile);
       let data;
       try {
         data = await response.json();
-        console.log(data);
+        // console.log(data);
       } catch (e) {
         throw new Error('Invalid response from server');
       }
 
-      setPredictions(data.predictions);
+      if (data.predictions.length != 0) setPredictions(data.predictions);
       // console.log("data",data);
-      await fetchMealRecommendation(data.predictions);
-      await fetchCalorieData();
+      if (data.predictions.length != 0) await fetchMealRecommendation(data.predictions);
+      if (data.predictions.length != 0) await fetchCalorieData();
       setUploadedMealId(data.meal._id);
       setSelectedFile(null);
       setPreviewUrl(null);
@@ -663,17 +663,19 @@ const [updatedProfile, setUpdatedProfile] = useState(profile);
                 </div>
               )}
 
-              {predictions && (
+              {predictions!= null && (
                 <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                   <h3 className="font-semibold mb-2">Detected Items:</h3>
+                  {predictions.length === 0 && (<p>No items detected.</p>)}
                   <ul className="space-y-2">
                   {predictions.map((pred, index) => (
-    <li key={index} className="flex justify-between">
-      <span>{pred.name}</span>
-      <span className="text-gray-600">{pred.calories} kcal</span>
-    </li>
-  ))}
+                    <li key={index} className="flex justify-between">
+                      <span>{pred.name}</span>
+                      <span className="text-gray-600">{pred.calories} kcal</span>
+                    </li>
+                        ))}
                   </ul>
+
                 </div>
               )}
               {mealAIloading && (
